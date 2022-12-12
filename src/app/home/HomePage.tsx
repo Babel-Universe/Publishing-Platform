@@ -82,19 +82,20 @@ class HomePage extends React.Component<{}, HomePageState> {
     let fake_post = JSON.parse(localStorage.getItem('posts'));
     console.log('post', fake_post)
 
-    let fake_json =
-    {
-      id: 1006,
-      author: 'Kevin Z',
-      image: '',
-      title: fake_post.blocks[0].data.text,
-      content: fake_post.blocks[1].data.text,
-      tag: '#tag-6',
-      time: fake_post.time / 1000
+    if (fake_post) {
+      let fake_json =
+      {
+        id: 1006,
+        author: 'Kevin Z',
+        image: '',
+        title: fake_post.blocks[0].data.text,
+        content: fake_post.blocks[1].data.text,
+        tag: '#tag-6',
+        time: fake_post.time / 1000
+      }
+  
+      json.unshift(fake_json);
     }
-
-    json.unshift(fake_json);
-
 
     //-----------------
     let posts = [];

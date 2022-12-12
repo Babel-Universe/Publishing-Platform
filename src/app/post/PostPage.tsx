@@ -51,8 +51,10 @@ class PostPage extends React.Component<{}, PostPageState> {
 
     // TEMP CODE - testing post
     let fake_post = JSON.parse(localStorage.getItem('posts'));
-    if (id == '1006') {
-      content = fake_post.blocks;
+    if (fake_post) {
+      if (id == '1006') {
+        content = fake_post.blocks;
+      }
     }
 
     this.setState({ content: content });
