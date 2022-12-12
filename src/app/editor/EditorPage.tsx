@@ -38,8 +38,10 @@ const placeholder = [
 ];
 
 interface EditorPageProps {
-  readOnly?: boolean;
   content?: any;
+  readOnly?: boolean;
+  hideSaveButton?: boolean;
+  // callback?: (data: any) => void;
 }
 
 class EditorPage extends React.Component<EditorPageProps, {}> {
@@ -87,9 +89,9 @@ class EditorPage extends React.Component<EditorPageProps, {}> {
   }
 
   onSave() {
-    // console.log('SAVE DATA', data);
     this.editor.save().then((outputData) => {
       console.log('Article data: ', outputData)
+      localStorage.setItem('posts', JSON.stringify(outputData));
     }).catch((error) => {
       console.log('Saving failed: ', error)
     });
@@ -100,9 +102,11 @@ class EditorPage extends React.Component<EditorPageProps, {}> {
       <div>
         <div className="editor-container" id="editorjs" />
 
-        <div className='button-container'>
-          <button className="button-save" onClick={()=>this.onSave()}>Save</button>
-        </div>
+        {!this.props.hideSaveButton &&
+          <div className='button-container'>
+            <button className="button-save" onClick={()=>this.onSave()}>Save</button>
+          </div>
+        }
       </div>
     );
   }

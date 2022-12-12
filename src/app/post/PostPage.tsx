@@ -1,30 +1,28 @@
 import React from 'react';
 import './PostPage.css';
-import EditorJS from '@editorjs/editorjs';
-
-// @ts-ignore
-import Header from '@editorjs/header';
-// @ts-ignore
-import List from '@editorjs/list';
-// @ts-ignore
-import ImageTool from '@editorjs/image';
+import EditorPage from '../editor/EditorPage';
 
 
-class PostPage extends React.Component<{}, {}> {
+interface PostPageState {
+  content: any;
+}
+
+class PostPage extends React.Component<{}, PostPageState> {
   
   protected editor: any;
 
   constructor(props: {}) {
-    super(props)
-  
+    super(props);
+    this.state = {
+      content: ''
+    };
   }
 
   componentDidMount() {
     let id = window.location.pathname.substring(6);
     console.log('post', id)
 
-    // fake data
-    const placeholder = [
+    let content = [
       {
         type: "header",
         data: {
@@ -51,44 +49,21 @@ class PostPage extends React.Component<{}, {}> {
       },
     ];
 
-    this.initEditor(placeholder);
-  }
+    // TEMP CODE - testing post
+    let fake_post = JSON.parse(localStorage.getItem('posts'));
+    if (id == '1006') {
+      content = fake_post.blocks;
+    }
 
-  initEditor(content: any) {
-    this.editor = new EditorJS({
-      /**
-       * Enable/Disable the read only mode
-       */
-      readOnly: true,
-
-      /**
-       * Id of Element that should contain Editor instance
-       */
-      holder: 'editorjs',
-
-      /** 
-       * Available Tools list. 
-       * Pass Tool's class or Settings object for each Tool you want to use 
-       */ 
-      tools: {
-        header: Header,
-        image: ImageTool,
-        list: List,
-      }, 
-
-      /**
-       * Saved data that should be rendered
-       */
-      data: {
-        blocks: content
-      }
-    });
+    this.setState({ content: content });
   }
 
   render() {
     return (
       <div>
-        <div className="editor-container" id="editorjs" />
+        {this.state.content &&
+          <EditorPage readOnly={true} content={this.state.content} hideSaveButton={true} />
+        }
       </div>
     );
   }

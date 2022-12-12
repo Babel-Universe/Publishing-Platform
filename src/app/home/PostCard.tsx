@@ -30,7 +30,7 @@ class PostCard extends React.Component<PostCardProps, PostCardState> {
       <NavLink className="card-link" to={"/post/" + data.id}>
         <div className='card-container'>
           <div className='card-header'>
-            {data.author} {formatTimestamp(data.time)}
+            {data.author} • {formatTimestamp(data.time)}
           </div>
 
           {data.image &&

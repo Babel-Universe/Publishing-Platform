@@ -41,7 +41,7 @@ class HomePage extends React.Component<{}, HomePageState> {
     let json = [
       {
         id: 1000,
-        author: 'John',
+        author: 'Author Name',
         image: '/coming-soon.png',
         title: 'Lnsectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis ',
         content: 'This is content This is content This is content This is content This is content This is content ',
@@ -50,7 +50,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       },
       {
         id: 1001,
-        author: 'John',
+        author: 'Author Name',
         image: '',
         title: 'Lnsectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis ',
         content: 'This is content This is content This is content This is content This is content This is content ',
@@ -59,7 +59,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       },
       {
         id: 1002,
-        author: 'John',
+        author: 'Author Name',
         image: '/coming-soon.png',
         title: 'This is a title',
         content: 'This is content This is content This is content This is content This is content This is content ',
@@ -68,7 +68,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       },
       {
         id: 1003,
-        author: 'John',
+        author: 'Author Name',
         image: '/coming-soon.png',
         title: 'This is a title',
         content: 'This is content This is content This is content This is content This is content This is content ',
@@ -77,6 +77,26 @@ class HomePage extends React.Component<{}, HomePageState> {
       },
     ];
 
+    //-----------------
+    // TEMP CODE - testing post
+    let fake_post = JSON.parse(localStorage.getItem('posts'));
+    console.log('post', fake_post)
+
+    let fake_json =
+    {
+      id: 1006,
+      author: 'Kevin Z',
+      image: '',
+      title: fake_post.blocks[0].data.text,
+      content: fake_post.blocks[1].data.text,
+      tag: '#tag-6',
+      time: fake_post.time / 1000
+    }
+
+    json.unshift(fake_json);
+
+
+    //-----------------
     let posts = [];
     for (let i = 0; i < json.length; i++) {
       posts.push(<PostCard key={i + msOfNow()} metadata={json[i]} />)

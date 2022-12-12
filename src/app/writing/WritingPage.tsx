@@ -2,22 +2,21 @@ import React from 'react';
 import EditorPage from '../editor/EditorPage';
 import './WritingPage.css';
 
-// interface WritingPageProps {
-//   metadata?: any;
-//   bgColor?: boolean;
-//   callback?: (data: any) => void;
-// }
-
-interface WritingPageState {
-  posts: any[];
+interface WritingPageProps {
+  // metadata?: any;
+  // callback?: (data: any) => void;
 }
 
-class WritingPage extends React.Component<{}, WritingPageState> {
+interface WritingPageState {
+  // posts: any[];
+}
+
+class WritingPage extends React.Component<WritingPageProps, WritingPageState> {
   
-  constructor(props: {}) {
+  constructor(props: WritingPageProps) {
     super(props);
     this.state = {
-      posts: [],
+      // posts: [],
     };
   }
 
