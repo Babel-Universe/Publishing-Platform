@@ -1,2 +1,2 @@
-# Gallery
-Babel Gallery Site
+# Babel Universe Publishing Platform
+Babel Universe Publishing Platform
