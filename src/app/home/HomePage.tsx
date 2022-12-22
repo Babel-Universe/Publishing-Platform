@@ -3,7 +3,16 @@ import { msOfNow } from '../util/util';
 import './HomePage.css';
 import PostCard from './PostCard';
 import { BsFillCaretDownFill } from 'react-icons/bs';
+import { GoogleSpreadsheet } from "google-spreadsheet";
 
+// Config variables
+const SPREADSHEET_ID = process.env.REACT_APP_SPREADSHEET_ID;
+export const SHEET_ID = process.env.REACT_APP_SHEET_ID;
+export const CLIENT_EMAIL = process.env.REACT_APP_GOOGLE_CLIENT_EMAIL;
+export const PRIVATE_KEY = process.env.REACT_APP_GOOGLE_SERVICE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+export const doc = new GoogleSpreadsheet(SPREADSHEET_ID);
+// console.log('CLIENT_EMAIL', SPREADSHEET_ID,doc)
 
 interface HomePageState {
   posts: any[];
@@ -32,78 +41,70 @@ class HomePage extends React.Component<{}, HomePageState> {
     this.getPosts();
   }
 
+  async readPost(url: string) {
+    try {
+      let resp = await fetch(url);
+      let data = await resp.json();
+      return data;
+    } catch (error) {
+      console.log('fetch err:',  error);
+    }
+  }
+
+  showPosts(data: any) {
+    let json =
+    {
+      id: 1006,
+      author: 'Kevin Z',
+      image: '',
+      title: data.blocks[0].data.text,
+      content: data.blocks[1].data.text,
+      tag: '#tag-6',
+      time: data.time / 1000
+    }
+
+    // let posts = [];
+    // for (let i = 0; i < json.length; i++) {
+    //   posts.push(<PostCard key={i + msOfNow()} metadata={json[i]} />)
+    // }
+    
+    this.state.posts.push(<PostCard key={msOfNow()} metadata={json} />)
+    this.setState({ posts: this.state.posts });
+  }
+
   async getPosts() {
     // let userId = Server.user.getName();
     // console.log('userId', userId)
     // let response = await Server.social.getPosts(userId);
 
-    // FACk DATA
-    let json = [
-      {
-        id: 1000,
-        author: 'Author Name',
-        image: '/coming-soon.png',
-        title: 'Lnsectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis ',
-        content: 'This is content This is content This is content This is content This is content This is content ',
-        tag: '#tag-1',
-        time: 1670300807
-      },
-      {
-        id: 1001,
-        author: 'Author Name',
-        image: '',
-        title: 'Lnsectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis ',
-        content: 'This is content This is content This is content This is content This is content This is content ',
-        tag: '#tag-1',
-        time: 1670300807
-      },
-      {
-        id: 1002,
-        author: 'Author Name',
-        image: '/coming-soon.png',
-        title: 'This is a title',
-        content: 'This is content This is content This is content This is content This is content This is content ',
-        tag: '#tag-1',
-        time: 1670300807
-      },
-      {
-        id: 1003,
-        author: 'Author Name',
-        image: '/coming-soon.png',
-        title: 'This is a title',
-        content: 'This is content This is content This is content This is content This is content This is content ',
-        tag: '#tag-1',
-        time: 1670300807
-      },
-    ];
+    // Read google sheet
+    try {
+      await doc.useServiceAccountAuth({
+        client_email: CLIENT_EMAIL,
+        private_key: PRIVATE_KEY,
+      });
 
-    //-----------------
-    // TEMP CODE - testing post
-    let fake_post = JSON.parse(localStorage.getItem('posts'));
-    console.log('post', fake_post)
+      // loads document properties and worksheets
+      await doc.loadInfo();
 
-    if (fake_post) {
-      let fake_json =
-      {
-        id: 1006,
-        author: 'Kevin Z',
-        image: '',
-        title: fake_post.blocks[0].data.text,
-        content: fake_post.blocks[1].data.text,
-        tag: '#tag-6',
-        time: fake_post.time / 1000
+      const sheet = doc.sheetsById[SHEET_ID];
+      const rows  = await sheet.getRows();
+      // console.log('rows: ', rows)
+
+      for (let i = 0; i < rows.length; i++) {
+        const approvedTime = rows[i].ApprovedTime;
+        
+        if (approvedTime) {
+          const postUrl = rows[i].PostURL;
+          // console.log('postUrl: ', postUrl)
+          let post = await this.readPost(postUrl);
+          console.log('post: ', post)
+          this.showPosts(post);
+        }
       }
-  
-      json.unshift(fake_json);
+    } catch (e) {
+      console.error('Error: ', e);
     }
-
-    //-----------------
-    let posts = [];
-    for (let i = 0; i < json.length; i++) {
-      posts.push(<PostCard key={i + msOfNow()} metadata={json[i]} />)
-    }
-    
-    this.setState({ posts: posts });
   }
 
   NoPost = () => {
